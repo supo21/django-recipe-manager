@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block start %}
+
+<div class="container ">
+    <section id="featured-recipes" style=" padding: 5px 0;">
+      <div class="container mx-auto" style=" width: 80%;
+      margin: 0 auto;
+      color:#333;
+  ">
+          
+
+
+<div class='row' style="background-color: #fff;
+padding: 20px;
+margin-bottom: 20px;
+border-radius: 5px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+
+<div class="col-2">
+    <img class= "rounded " src="{{ full_recipe.recipe_image.url }}" style="height : 200px; width: 150px"></div>
+
+<div class="col">
+    <h3>{{ full_recipe.recipe_name }}</h3>
+    <p>{{ full_recipe.recipe_description }}</p>
+    <p style="white-space: pre-wrap;">{{ full_recipe.recipe_prep }}</p>
+    {% if request.user.is_superuser %}
+    <a href = "/delete-recipe/{{full_recipe.id}}" class = "btn btn-danger m-2">Delete</a>
+    <a href = "/update-recipe/{{full_recipe.id}}" class = "btn btn-success">Update</a>
+    {% endif %}
+</div>
+</div>
+
+
+
+
+</div>
+</section>
+{% endblock %}

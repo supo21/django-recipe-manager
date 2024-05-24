@@ -4,30 +4,54 @@ from django.contrib.auth.models import User
 from django.contrib import  messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+import random
 
-@login_required(login_url = "/")
-def recipes(request):
+def home(request):
+    queryset = list(Recipe.objects.all())
+    featured_recipes = random.sample(queryset, 3)
+    context = {"featured_recipes": featured_recipes}
+
+    queryset = Recipe.objects.all()
+
+    if request.GET.get("search"):
+        queryset = queryset.filter(recipe_name__icontains = request.GET.get("search"))
+
+        context = {"recipes": queryset}
+
+        return render(request, "recipes.html", context)
+
+    return render(request, "home.html", context)
+
+@login_required(login_url = "/login/")
+def add_recipes(request):
     if request.method == "POST":
         data = request.POST
 
         recipe_name = data.get("recipe_name")
         recipe_description = data.get("recipe_description")
         recipe_image = request.FILES.get("recipe_image")
+        recipe_prep = data.get("recipe_prep")
 
         Recipe.objects.create(
             recipe_name = recipe_name,
             recipe_description = recipe_description,
             recipe_image = recipe_image,
+            recipe_prep= recipe_prep,
         )
 
         return redirect('/recipes/')
-    
-    queryset = Recipe.objects.all()
+    return render(request, "add_recipe.html")
 
+
+def recipes(request):
+    queryset = Recipe.objects.all()
+    context = {"recipes": queryset}
     if request.GET.get("search"):
         queryset = queryset.filter(recipe_name__icontains = request.GET.get("search"))
 
-    context = {"recipes": queryset}
+        context = {"recipes": queryset}
+
+        return render(request, "recipes.html", context)
 
     return render(request, "recipes.html", context)
 
@@ -46,9 +70,11 @@ def update_recipe(request, id):
         recipe_name = data.get("recipe_name")
         recipe_description = data.get("recipe_description")
         recipe_image = request.FILES.get("recipe_image")
+        recipe_prep = data.get("recipe_prep")
 
         queryset.recipe_name = recipe_name
         queryset.recipe_description = recipe_description
+        queryset.recipe_prep = recipe_prep
         if recipe_image:
             queryset.recipe_image = recipe_image
 
@@ -58,6 +84,17 @@ def update_recipe(request, id):
     context = {"recipes" : queryset}
     return render(request, "update_recipes.html", context)
 
+def full_recipe(request, id):
+    queryset = Recipe.objects.get(id = id)
+    context = {"full_recipe": queryset}
+    if request.GET.get("search"):
+        queryset = queryset.filter(recipe_name__icontains = request.GET.get("search"))
+
+        context = {"recipes": queryset}
+
+        return render(request, "recipes.html", context)
+
+    return render(request, "full_recipe.html", context)
 
 def login_page(request):
     if request.method == "POST":
@@ -76,7 +113,7 @@ def login_page(request):
 
         else:
             login(request, user)
-            return redirect("/recipes/")
+            return redirect("/")
 
     return render(request, "login.html")
 

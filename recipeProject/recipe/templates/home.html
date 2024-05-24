@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block start %}
+<section id="featured-recipes" style=" padding: 50px 0;">
+    <div class="container mx-auto" style=" width: 80%;
+    margin: 0 auto;
+    color:#333;
+">
+        <h2 class="mt-5">Featured Recipes</h2>
+        
+            {% for recipe in featured_recipes %}
+            <div class='row' style="background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+
+            <div class="col-2">
+                <img class= "rounded " src="{{ recipe.recipe_image.url }}" style="height : 200px; width: 150px"></div>
+
+            <div class="col" >
+                <h3>{{ recipe.recipe_name }}</h3>
+                <p>{{ recipe.recipe_description }}</p>
+                <a href="full-recipe/{{ recipe.id }}/" class = "btn btn-secondary">View Full Recipe</a>
+            </div>
+            </div>
+            {% endfor %}
+    </div>
+</section>
+{% endblock %}

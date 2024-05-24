@@ -20,14 +20,21 @@ from recipe.views import *
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('recipes/', recipes, name = "recipes"),
+    path('', home, name = "home"),
+    path('add-recipes/', add_recipes, name = "add_recipes"),
     path('delete-recipe/<id>/', delete_recipe, name="delete_recipe"),
     path('update-recipe/<id>/', update_recipe, name="update_recipe"),
-    path('', login_page , name="login_page"),
+    path('login/', login_page , name="login_page"),
     path('register/', register , name="register"),
     path('logout/', logout_page, name="logout_page"),
+    path('full-recipe/<id>/', full_recipe, name="full_recipe"),
+
+    path('rm.png', RedirectView.as_view(url=staticfiles_storage.url('recipe_images/rm.png'))),
     
     path('admin/', admin.site.urls),
 ]
